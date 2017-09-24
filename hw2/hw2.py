@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import numpy as np
 import cv2
+from mpl_toolkits.mplot3d import axes3d
 from matplotlib import pyplot as plt
 from numpy import array
 
@@ -100,9 +101,181 @@ def main():
 # the program.
 
 
+
+def problemFour():
+
+	fig = plt.figure()
+	ax = fig.add_subplot(111, projection='3d')
+
+	ax.plot_wireframe(
+		[0,4,4,0,0,0,4,4,4,4,4,4,0,0,0,2,0,2,4,2,4,2],
+		[0,0,4,4,0,0,0,0,0,4,4,4,4,4,0,2,4,2,4,2,0,2],
+		[0,0,0,0,0,4,4,0,4,4,0,4,4,0,4,8,4,8,4,8,4,8], rstride = 10, cstride = 10)
+
+	
+
+
+
+	house = np.array([[0,0,0], [4,0,0], [4,4,0], [0,4,0], [0,0,4], [4,0,4], [4,4,4], [0,4,4], [2,2,8]])
+	extra = np.array([1, 1, 1, 1, 1, 1, 1, 1,1])
+	extra = np.matrix(extra)
+
+
+	house = np.matrix(house)
+	house = house.transpose()
+	house = np.vstack([house,extra])
+
+
+
+	combined = np.array([[-0.707, -0.707, 0, 3], [0.707, -0.707, 0, 0.5], [0, 0, 1, 3]])
+	combined = np.matrix(combined)	
+
+	K = np.array([[100, 0, 200], [-0, 100, 200], [0, 0, 1]])
+	K = np.matrix(K)
+
+	pts = K * combined * house;
+	pts = pts.transpose()
+
+	image_array = []
+
+	for i in range(0,9):
+		#import pdb; pdb.set_trace()
+		divide_by = pts.item((i,2))
+		one = pts.item((i,0))/divide_by
+		two = pts.item((i,1))/divide_by
+		image_array.append([one, two])
+
+
+	
+	
+	
+	np_image_array = np.asarray(image_array)
+
+	pt1 = (int (np_image_array[0,0]), int(np_image_array[0,1]))
+	pt2 = (int (np_image_array[1,0]), int(np_image_array[1,1]))
+	pt3 = (int (np_image_array[2,0]), int(np_image_array[2,1]))
+	pt4 = (int (np_image_array[3,0]), int(np_image_array[3,1]))
+	pt5 = (int (np_image_array[4,0]), int(np_image_array[4,1]))
+	pt6 = (int (np_image_array[5,0]), int(np_image_array[5,1]))
+	pt7 = (int (np_image_array[6,0]), int(np_image_array[6,1]))
+	pt8 = (int (np_image_array[7,0]), int(np_image_array[7,1]))
+	pt9 = (int (np_image_array[8,0]), int(np_image_array[8,1]))
+
+
+	image_house = np.zeros((512, 512, 3), np.uint8)
+	cv2.line(image_house, pt1, pt2, np.array((0,0,255)), 1)
+	cv2.line(image_house, pt2, pt3, np.array((0,0,255)), 1)
+	cv2.line(image_house, pt3, pt4, np.array((0,0,255)), 1)
+	cv2.line(image_house, pt4, pt1, np.array((0,0,255)), 1)
+	cv2.line(image_house, pt1, pt5, np.array((0,0,255)), 1)
+	cv2.line(image_house, pt5, pt6, np.array((0,0,255)), 1)
+	cv2.line(image_house, pt6, pt7, np.array((0,0,255)), 1)
+	cv2.line(image_house, pt7, pt8, np.array((0,0,255)), 1)
+	cv2.line(image_house, pt8, pt5, np.array((0,0,255)), 1)
+
+	cv2.line(image_house, pt2, pt6, np.array((0,0,255)), 1)
+	cv2.line(image_house, pt3, pt7, np.array((0,0,255)), 1)
+	cv2.line(image_house, pt4, pt8, np.array((0,0,255)), 1)
+
+	cv2.line(image_house, pt5, pt9, np.array((0,0,255)), 1)
+	cv2.line(image_house, pt8, pt9, np.array((0,0,255)), 1)
+	cv2.line(image_house, pt7, pt9, np.array((0,0,255)), 1)
+	cv2.line(image_house, pt6, pt9, np.array((0,0,255)), 1)
+
+
+	while True:
+		cv2.imshow("houseimage", image_house)
+		key = cv2.waitKey(1) & 0xFF
+		plt.show()
+
+		# if the 'c' key is pressed, break from the loop
+		if key == ord("q"):
+			break
+
+# Close the window will exit the program
+	cv2.destroyAllWindows()
+	
+
+def problemFourTwo():
+
+	R = np.array([[-0.707, -0.707, 0], [0.707, -0.707, 0], [0, 0, 1]])
+	t = np.array([3, 0.5, 3])
+
+	combined = np.array([[-0.707, -0.707, 0, 3], [0.707, -0.707, 0, 0.5], [0, 0, 1, 3]])
+	combined = np.matrix(combined)	
+
+	K = np.array([[100, 0, 200], [-0, 100, 200], [0, 0, 1]])
+	K = np.matrix(K)
+
+	house = np.array([[100, 300, 0], [300, 300, 0], [300, 500, 0], [100 , 500, 0], [200,150, 0],
+		[350,250,0], [400, 250, 0], [375, 100, 0]])
+
+	extra = np.array([1, 1, 1, 1, 1, 1, 1, 1])
+	extra = np.matrix(extra)
+
+
+	house = np.matrix(house)
+	house = house.transpose()
+	house = np.vstack([house,extra])
+	
+	
+	pts = K * combined * house;
+	pts = pts.transpose()
+	
+	image_array = []
+
+	for i in range(0,8):
+		#import pdb; pdb.set_trace()
+		divide_by = pts.item((i,2))
+		one = pts.item((i,0))/divide_by
+		two = pts.item((i,1))/divide_by
+		image_array.append([one, two])
+
+
+	
+	print image_array
+	
+	np_image_array = np.asarray(image_array)
+
+	pt1 = [np_image_array[0,0], np_image_array[0,1]]
+	pt2 = [np_image_array[1,0], np_image_array[1,1]]
+	pt3 = [np_image_array[2,0], np_image_array[2,1]]
+	pt4 = [np_image_array[3,0], np_image_array[3,1]]
+	pt5 = [np_image_array[4,0], np_image_array[4,1]]
+	pt6 = [np_image_array[5,0], np_image_array[5,1]]
+	pt7 = [np_image_array[6,0], np_image_array[6,1]]
+	pt8 = [np_image_array[7,0], np_image_array[7,1]]
+
+
+	plt.plot(pt1, pt2)
+	plt.plot(pt1, pt5)
+	plt.plot(pt1, pt4)
+	plt.plot(pt1, pt6)
+	plt.plot(pt2, pt3)
+	plt.plot(pt2, pt7)
+	plt.plot(pt2, pt5)
+	plt.plot(pt3, pt4)
+	plt.plot(pt5, pt8)
+	plt.plot(pt8, pt7)
+	plt.plot(pt8, pt6)
+	plt.plot(pt6, pt7)
+
+
+	plt.show()
+
+
+
+	#for i in range (0,9)
+	
+	
+
+
+
 def problemThree():
 	
 	testimage = cv2.imread('testimg.jpg',1)
+	cv2.imshow('testimage',testimage)
+	cv2.waitKey(0)
 
 	tiShape = testimage.shape
 	xvals = [0,tiShape[1],tiShape[1],0]
@@ -126,9 +299,17 @@ def problemThree():
 	
 	result = dst + image
 
-	cv2.imshow('result',result)
-	cv2.waitKey(0)
+	while True:
+		cv2.imshow('result',result)
+		key = cv2.waitKey(1) & 0xFF
 
+		# if the 'c' key is pressed, break from the loop
+		if key == ord("c"):
+			break
+
+ 	cv2.destroyAllWindows()
+	
+	
 	
 
 
@@ -170,7 +351,9 @@ def problemTwo():
 
 if __name__ == '__main__':
     main()
+    problemTwo()
     problemThree()
+    problemFour()
 
 
 
