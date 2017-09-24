@@ -22,7 +22,7 @@ lx = -1
 ly = -1
 def click_and_keep(event, x, y, flags, param):
 	# grab references to the global variables
-	global refPt, image,lx,ly, xcoor, ycoor, A, newX, newY, i, newRowOne, newRowTwo
+	global refPt, image, testimage, lx,ly, xcoor, ycoor, A, newX, newY, i, newRowOne, newRowTwo
  
 	# if the left mouse button was clicked, record the starting
 	# (x, y) coordinates 
@@ -72,12 +72,13 @@ def createH_mat(A_mat):
 def main():
 	# Read Image
 	image = cv2.imread('ts.jpg',1);
+	print "Image shape is: ", image.shape
 	# image  = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 	cv2.namedWindow(windowName)
 	cv2.setMouseCallback(windowName, click_and_keep)
  	arr = np.array(image)
 	x = np.size(arr)
-	print arr
+	#print arr
 # keep looping until the 'q' key is pressed
 
 	while True:
@@ -99,26 +100,31 @@ def main():
 
 
 def problemThree():
-	testimage = cv2.imread('ts.jpg',1);
-	# image  = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-	cv2.namedWindow(windowName)
-	cv2.setMouseCallback("testimage", click_and_keep)
+	
+	testimage = cv2.imread('testimg.jpg',1)
+	x = testimage.shape
+	print x
+	xvals = [0,x[1],x[1],0]
+	yvals = [0,0, x[0], x[0]]
+	print "xvals are: ", xvals
+	print "yvals are: ",yvals
 
-
-
-
-
-
-	A = createA_mat(newX, newY, xcoor, ycoor)
+	A = createA_mat(xvals, yvals, xcoor,ycoor)
 	H = createH_mat(A)
+
+	dst = cv2.warpPerspective(testimage,H,(700,700))
+
+	plt.subplot(121),plt.imshow(testimage),plt.title('Input')
+	plt.subplot(122),plt.imshow(image),plt.title('Output')
+	plt.show()
+
+
+	#A = createA_mat(newX, newY, xcoor, ycoor)
+	#H = createH_mat(A)
 
 	
 
-	testimage = cv2.imread('testimage.jpg',1);
-	#image = cv2.warpPerspective(testimage,H,(700,700))
-	#plt.subplot(121),plt.imshow(testimage),plt.title('Input')
-	#plt.subplot(122),plt.imshow(image),plt.title('Output')
-	#plt.show()
+	
 
 
 
@@ -148,7 +154,7 @@ def problemTwo():
 
 if __name__ == '__main__':
     main()
-    problemTwo()
+    problemThree()
 
 
 
