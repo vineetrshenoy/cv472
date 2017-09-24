@@ -105,34 +105,34 @@ def problemThree():
 	testimage = cv2.imread('testimg.jpg',1)
 
 	x = testimage.shape
-	print x
 	xvals = [0,x[1],x[1],0]
 	yvals = [0,0, x[0], x[0]]
-	print "xvals are: ", xvals
-	print "yvals are: ",yvals
+	
 
 	A = createA_mat(xvals, yvals, xcoor,ycoor)
 	H = createH_mat(A)
-
+	
+	image = cv2.imread('ts.jpg', cv2.IMREAD_COLOR)
 
 	#Black polygon
 	pts = np.array([[xcoor[0],ycoor[0]],[xcoor[1],ycoor[1]],[xcoor[2],ycoor[2]],[xcoor[3],ycoor[3]]], np.int32)
-	#pts = pts.reshape((-1,1,2))
-	cv2.polylines(polygon,[pts],True,(0,255,255))
-
+	pts = pts.reshape((-1,1,2))
+	cv2.fillPoly(image, [pts], (0,0,0))
 	    	
-	cv2.imshow("newwindow", polygon)
-	cv2.waitKey()
+	
+	tsShape = image.shape
+	dst = cv2.warpPerspective(testimage,H,(tsShape[1],tsShape[0]))
 
-	#dst = cv2.warpPerspective(testimage,H,(700,700))
+	
+	result = dst + image
 
-	#plt.subplot(121),plt.imshow(testimage),plt.title('Input')
-	#plt.subplot(122),plt.imshow(dst),plt.title('Output')
-	#plt.show()
+	cv2.imshow('result',result)
+	cv2.waitKey(0)
+
+	
 
 
-	#A = createA_mat(newX, newY, xcoor, ycoor)
-	#H = createH_mat(A)
+	
 
 	
 
@@ -177,7 +177,7 @@ def problemTwo():
 
 if __name__ == '__main__':
     main()
-    problemTwo()
+    problemThree()
 
 
 
