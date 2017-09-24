@@ -17,12 +17,13 @@ newY = [100, 100, 500, 500]
 refPt = []
 testimage = np.zeros((512, 512, 3), np.uint8)
 image = np.zeros((512, 512, 3), np.uint8)
+polygon = np.zeros((1000,1000,3), np.uint8)
 windowName = 'HW Window';
 lx = -1
 ly = -1
 def click_and_keep(event, x, y, flags, param):
 	# grab references to the global variables
-	global refPt, image, testimage, lx,ly, xcoor, ycoor, A, newX, newY, i, newRowOne, newRowTwo
+	global refPt, image, testimage, lx,ly, xcoor, ycoor, A, newX, newY, i, newRowOne, newRowTwo,polygon
  
 	# if the left mouse button was clicked, record the starting
 	# (x, y) coordinates 
@@ -102,6 +103,7 @@ def main():
 def problemThree():
 	
 	testimage = cv2.imread('testimg.jpg',1)
+
 	x = testimage.shape
 	print x
 	xvals = [0,x[1],x[1],0]
@@ -112,11 +114,21 @@ def problemThree():
 	A = createA_mat(xvals, yvals, xcoor,ycoor)
 	H = createH_mat(A)
 
-	dst = cv2.warpPerspective(testimage,H,(700,700))
 
-	plt.subplot(121),plt.imshow(testimage),plt.title('Input')
-	plt.subplot(122),plt.imshow(image),plt.title('Output')
-	plt.show()
+	#Black polygon
+	pts = np.array([[xcoor[0],ycoor[0]],[xcoor[1],ycoor[1]],[xcoor[2],ycoor[2]],[xcoor[3],ycoor[3]]], np.int32)
+	#pts = pts.reshape((-1,1,2))
+	cv2.polylines(polygon,[pts],True,(0,255,255))
+
+	    	
+	cv2.imshow("newwindow", polygon)
+	cv2.waitKey()
+
+	#dst = cv2.warpPerspective(testimage,H,(700,700))
+
+	#plt.subplot(121),plt.imshow(testimage),plt.title('Input')
+	#plt.subplot(122),plt.imshow(dst),plt.title('Output')
+	#plt.show()
 
 
 	#A = createA_mat(newX, newY, xcoor, ycoor)
@@ -134,19 +146,30 @@ def problemTwo():
 
 	image = cv2.imread('ts.jpg',1);
 	
-	dst = cv2.warpPerspective(image,H,(700,700))
+	dst = cv2.warpPerspective(image,H,(1000,1000))
 
 
-	plt.subplot(121),plt.imshow(image),plt.title('Input')
-	plt.subplot(122),plt.imshow(dst),plt.title('Output')
-	plt.show()
-
+	#plt.subplot(121),plt.imshow(image),plt.title('Input')
+	#plt.subplot(122),plt.imshow(dst),plt.title('Output')
+	#plt.show()
 
 	while True:
+		cv2.imshow("Warp Perspective", dst)
+		key = cv2.waitKey(1) & 0xFF
 
+		# if the 'c' key is pressed, break from the loop
 		if key == ord("c"):
 			break
 
+# Close the window will exit the program
+	cv2.destroyAllWindows()
+
+
+
+
+
+
+	
 
 
 
@@ -154,7 +177,7 @@ def problemTwo():
 
 if __name__ == '__main__':
     main()
-    problemThree()
+    problemTwo()
 
 
 
