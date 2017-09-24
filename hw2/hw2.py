@@ -104,9 +104,9 @@ def problemThree():
 	
 	testimage = cv2.imread('testimg.jpg',1)
 
-	x = testimage.shape
-	xvals = [0,x[1],x[1],0]
-	yvals = [0,0, x[0], x[0]]
+	tiShape = testimage.shape
+	xvals = [0,tiShape[1],tiShape[1],0]
+	yvals = [0,0, tiShape[0], tiShape[0]]
 	
 
 	A = createA_mat(xvals, yvals, xcoor,ycoor)
@@ -120,21 +120,14 @@ def problemThree():
 	cv2.fillPoly(image, [pts], (0,0,0))
 	    	
 	
-	tsShape = image.shape
-	dst = cv2.warpPerspective(testimage,H,(tsShape[1],tsShape[0]))
+	timesShape = image.shape
+	dst = cv2.warpPerspective(testimage,H,(timesShape[1],timesShape[0]))
 
 	
 	result = dst + image
 
 	cv2.imshow('result',result)
 	cv2.waitKey(0)
-
-	
-
-
-	
-
-	
 
 	
 
