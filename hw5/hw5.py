@@ -191,15 +191,6 @@ def problem4():
 	pts = np.transpose(pts)
 	NN = 9
 
-	#ones = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1])
-	#pts = np.vstack([pts, pts])
-	#pts = np.matrix(pts)
-
-	pix  = np.zeros((NN,3))
-	pix = np.matrix(pix)
-
-
-
 	lt = K * MextLeft * pts
 
 	rt = K * MextRight * pts
@@ -236,9 +227,84 @@ def problem4():
 	z_val = image_array[2,:]
 
 	
-	import pdb; pdb.set_trace()
+	#import pdb; pdb.set_trace()
 	#ax.plot_wireframe(testx, testy, testz)
-	ax.scatter(x_val, y_val, z_val)
+	pt1 = np.array([x_val[0], y_val[0], z_val[0]])
+	pt2 = np.array([x_val[1], y_val[1], z_val[1]])
+	pt3 = np.array([x_val[2], y_val[2], z_val[2]])
+	pt4 = np.array([x_val[3], y_val[3], z_val[3]])
+	pt5 = np.array([x_val[4], y_val[4], z_val[4]])
+	pt6 = np.array([x_val[5], y_val[5], z_val[5]])
+	pt7 = np.array([x_val[6], y_val[6], z_val[6]])
+	pt8 = np.array([x_val[7], y_val[7], z_val[7]])
+	pt9 = np.array([x_val[8], y_val[8], z_val[8]])
+
+
+	onex = (pt1[0],pt2[0])
+	oney = (pt1[1],pt2[1])
+	onez = [pt1[2],pt2[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+
+	onex = (pt3[0],pt2[0])
+	oney = (pt3[1],pt2[1])
+	onez = [pt3[2],pt2[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+	onex = (pt3[0],pt4[0])
+	oney = (pt3[1],pt4[1])
+	onez = [pt3[2],pt4[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+
+	onex = (pt1[0],pt4[0])
+	oney = (pt1[1],pt4[1])
+	onez = [pt1[2],pt4[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+
+	onex = (pt1[0],pt5[0])
+	oney = (pt1[1],pt5[1])
+	onez = [pt1[2],pt5[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+	onex = (pt6[0],pt5[0])
+	oney = (pt6[1],pt5[1])
+	onez = [pt6[2],pt5[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+
+	onex = (pt6[0],pt2[0])
+	oney = (pt6[1],pt2[1])
+	onez = [pt6[2],pt2[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+
+	onex = (pt3[0],pt7[0])
+	oney = (pt3[1],pt7[1])
+	onez = [pt3[2],pt7[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+	onex = (pt6[0],pt7[0])
+	oney = (pt6[1],pt7[1])
+	onez = [pt6[2],pt7[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+	onex = (pt8[0],pt7[0])
+	oney = (pt8[1],pt7[1])
+	onez = [pt8[2],pt7[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+	onex = (pt8[0],pt5[0])
+	oney = (pt8[1],pt5[1])
+	onez = [pt8[2],pt5[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+	onex = (pt8[0],pt4[0])
+	oney = (pt8[1],pt4[1])
+	onez = [pt8[2],pt4[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
 
 
 	plt.waitforbuttonpress(0) # this will wait for indefinite time
@@ -261,14 +327,7 @@ def problem3():
 	pts = np.transpose(pts)
 	NN = 9
 
-	#ones = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1])
-	#pts = np.vstack([pts, pts])
-	#pts = np.matrix(pts)
-
-	pix  = np.zeros((NN,3))
-	pix = np.matrix(pix)
-
-
+	
 
 	lt = K * MextLeft * pts
 
