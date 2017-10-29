@@ -212,7 +212,7 @@ def problem4():
 	K_inv = np.linalg.inv(K)
 
 	
-	X = cv2.triangulatePoints(MextLeft, MextRight, np.transpose(lt), np.transpose(rt) )
+	X = cv2.triangulatePoints(K*MextLeft, K*MextRight, np.transpose(lt), np.transpose(rt) )
 	
 	image_array = []
 
@@ -229,21 +229,16 @@ def problem4():
 	
 	fig = plt.figure()
 	ax = fig.add_subplot(111, projection='3d')
-	import pdb; pdb.set_trace()
+	
 	#test = image_array[0,:]
 	x_val = image_array[0,:]
 	y_val = image_array[1,:]
 	z_val = image_array[2,:]
 
-
-	testx = np.array([x_val[0], x_val[1]])
-	testy = np.array([y_val[0], y_val[1]])
-	testz = np.array([z_val[0], z_val[1]])
-
-
-
-	ax.plot_wireframe(testx, testy, textz)
 	
+	import pdb; pdb.set_trace()
+	#ax.plot_wireframe(testx, testy, testz)
+	ax.scatter(x_val, y_val, z_val)
 
 
 	plt.waitforbuttonpress(0) # this will wait for indefinite time
