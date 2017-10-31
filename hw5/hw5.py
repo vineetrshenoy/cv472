@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import glob
 from mpl_toolkits.mplot3d import axes3d
 from matplotlib import pyplot as plt
 from numpy import array
@@ -336,6 +337,49 @@ def problem3():
 	drawMyObject(rt, 'Right Camera', 0)
 
 
+	F = problem1()
+
+
+	Ktemp = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
+	U, S, V = np.linalg.svd(np.transpose(F))
+
+	lastCol = V[2,:]
+	epipole = lastCol
+	epipole = np.transpose(epipole)
+	e1 = epipole[0]
+	e2 = epipole[1]
+	e3 = epipole[2]
+
+	ecross = np.matrix(np.array([[0, -1*e3, e3], [e3, 0, -1*e1], [-1*e2, e1, 0]]))
+
+	temp_mult = ecross * F
+	cameramatrix = np.concatenate((temp_mult,epipole), axis=1)
+
+	import pdb; pdb.set_trace()
+	Rlr = cameramatrix[0:3,0:3]
+	tlr = cameramatrix[:,3]
+
+
+
+	E = np.transpose(K) * F * K
+
+	W = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]])
+	Z = np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 0]])
+
+	U, S, V = np.linalg.svd(E)
+
+	S1 = -1*U * Z * np.transpose(U)
+	S2 = U * Z * np.transpose(U)
+	R1 = U * np.transpose(W) * np.transpose(V)
+	R2 = U * W * np.transpose(V)
+
+	foundit = 0
+
+	
+
+
+
 
 
 def problem2(F_mat):
@@ -424,10 +468,147 @@ def problem1():
 	return lastCol
 
 
+def problem5():
+
+	# termination criteria
+	criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+
+	# prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
+	objp = np.zeros((6*7,3), np.float32)
+	objp[:,:2] = np.mgrid[0:7,0:6].T.reshape(-1,2)
+
+	# Arrays to store object points and image points from all the images.
+	objpoints = [] # 3d point in real world space
+	imgpoints = [] # 2d points in image plane.
+
+	images = glob.glob('*.jpg')
+	count = 0
+	for fname in images:
+	    img = cv2.imread(fname)
+	    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+	    # Find the chess board corners
+	    ret, corners = cv2.findChessboardCorners(gray, (7,6),None)
+
+	    # If found, add object points, image points (after refining them)
+	    if ret == True:
+	        objpoints.append(objp)
+
+	        corners2 = cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
+	        imgpoints.append(corners2)
+
+	        # Draw and display the corners
+	        img = cv2.drawChessboardCorners(img, (7,6), corners2,ret)
+
+	        name = "image" + str(count)
+	        count = count + 1
+
+	        while True:
+				cv2.imshow(name, img)
+				key = cv2.waitKey(1) & 0xFF
+				plt.show()
+
+				# if the 'c' key is pressed, break from the loop
+				if key == ord("n"):
+					break
+	        cv2.destroyAllWindows()
+
+	
+
+
+	ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1],None,None)
+	
+
+	
+
+	R_mats = np.asarray(rvecs)
+	tvecs = np.asarray(tvecs)
+
+	mat_R = np.array([])
+
+	for i in range(0, len(R_mats)):
+		
+		x = R_mats[i]
+		y = np.empty([3,3])
+		cv2.Rodrigues(x, y)
+		
+
+		t = tvecs[i]
+		Rcw = np.transpose(np.matrix(y))
+		tcw = -1 * Rcw * t
+		Tcw = np.concatenate((Rcw,tcw), axis=1)
+		
+		
+		fig = plt.figure()
+		ax = fig.add_subplot(111, projection='3d')
+
+
+		title = "Image " +str(i) + ", camera at (" + str(tcw[0,0]) + ", " + str(tcw[1,0]) + ", " + str(tcw[2,0]) + ")"
+
+		fig.canvas.set_window_title(title) 
+
+		ax.scatter([tcw[0]], [tcw[1]], [tcw[2]])
+
+		print "The Rotation + translation matrix is: "
+		print title
+		
+		print Tcw
+
+		print ""
+		print ""
+		print ""
+
+
+		plt.waitforbuttonpress(0) # this will wait for indefinite time
+		plt.close(fig)
+		
+		
+
+		plt.show()
+
+		x = 5
+
+
+
+
+
+
+	mat_R = np.asarray(mat_R)
+
+
+	print ""
+	print ""
+	print ""
+
+	print "The K matrix is: "
+	print mtx
+
+	
+
+def problem6():
+
+
+	soa = np.array([[0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 1, 0],
+                [0, 0, 0, 0, 0, 1]])
+
+
+	X, Y, Z, U, V, W = zip(*soa)
+	fig = plt.figure()
+	ax = fig.add_subplot(111, projection='3d')
+	ax.quiver(X, Y, Z, U, V, W)
+	ax.set_xlim([-5, 5])
+	ax.set_ylim([-5, 5])
+	ax.set_zlim([-5, 5])
+
+	#plt.waitforbuttonpress(0) # this will wait for indefinite time
+	#plt.close(fig)
+	plt.show()
+
 if __name__ == '__main__':
     #main()
     #F = problem1()
     #problem2(F)
     #problem3()
-    problem4()
-    
+    #problem4()
+    problem5()
+    #problem6()
