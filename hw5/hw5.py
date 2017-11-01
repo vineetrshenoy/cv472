@@ -203,7 +203,7 @@ def problem4():
 	rt = dividePoints(rt)
 	K_inv = np.linalg.inv(K)
 
-	
+	import pdb; pdb.set_trace()
 	X = cv2.triangulatePoints(K*MextLeft, K*MextRight, np.transpose(lt), np.transpose(rt) )
 	
 	image_array = []
@@ -314,7 +314,7 @@ def problem4():
 
 
 def problem3():
-	K = np.array([[-100, 0, 200], [0, -100, 200], [0, 0, 1]])
+	K = np.array([[-100/1.0 , 0/1.0 , 200/1.0 ], [0/1.0, -100/1.0, 200/1.0], [0/1.0, 0/1.0, 1/1.0]])
 	K = np.matrix(K)
 
 
@@ -331,52 +331,179 @@ def problem3():
 	
 
 	lt = K * MextLeft * pts
-
 	rt = K * MextRight * pts
+
+	
+
+
 	drawMyObject(lt, 'Left Camera', 0)
 	drawMyObject(rt, 'Right Camera', 0)
 
 
-	F = problem1()
-
-
-	Ktemp = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-
-	U, S, V = np.linalg.svd(np.transpose(F))
-
-	lastCol = V[2,:]
-	epipole = lastCol
-	epipole = np.transpose(epipole)
-	e1 = epipole[0]
-	e2 = epipole[1]
-	e3 = epipole[2]
-
-	ecross = np.matrix(np.array([[0, -1*e3, e3], [e3, 0, -1*e1], [-1*e2, e1, 0]]))
-
-	temp_mult = ecross * F
-	cameramatrix = np.concatenate((temp_mult,epipole), axis=1)
-
+	lt = dividePoints(lt)
+	rt = dividePoints(rt)
+	
 	import pdb; pdb.set_trace()
-	Rlr = cameramatrix[0:3,0:3]
-	tlr = cameramatrix[:,3]
+	temp = np.matrix(np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]]))
 
+	M_left = K * temp 
 
-
+	F = cv2.findFundamentalMat(lt, rt)
+	F = F[0]
 	E = np.transpose(K) * F * K
+
+
+	U, S, V = np.linalg.svd(E)
+	V = np.transpose(V)
+
 
 	W = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]])
 	Z = np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 0]])
 
-	U, S, V = np.linalg.svd(E)
+	
 
 	S1 = -1*U * Z * np.transpose(U)
 	S2 = U * Z * np.transpose(U)
 	R1 = U * np.transpose(W) * np.transpose(V)
 	R2 = U * W * np.transpose(V)
 
+
+	
 	foundit = 0
 
 	
+	S = S1
+	R = R1
+
+	tlr = np.array([S[2,1], S[0,2], -1*S[0,1]])
+	
+	T = np.c_[R,tlr]
+
+	M_right = K * T
+	#import pdb; pdb.set_trace()
+	lt = np.transpose(lt)
+	rt = np.transpose(rt)
+	import pdb; pdb.set_trace()
+	X = cv2.triangulatePoints(M_left, M_right, lt, rt)
+	
+	
+	
+
+
+
+
+
+
+
+	image_array = []
+
+	for i in range(0,9):
+			
+			divide_by = X[3,i]
+			one = X[0,i]/divide_by
+			two = X[1,i]/divide_by
+			three = X[2,i]/divide_by
+			image_array.append([one, two, three])
+
+	
+	image_array = np.transpose(image_array)
+	
+	fig = plt.figure()
+	ax = fig.add_subplot(111, projection='3d')
+	
+	#test = image_array[0,:]
+	x_val = image_array[0,:]
+	y_val = image_array[1,:]
+	z_val = image_array[2,:]
+	import pdb; pdb.set_trace()
+
+	
+	#import pdb; pdb.set_trace()
+	#ax.plot_wireframe(testx, testy, testz)
+	pt1 = np.array([x_val[0], y_val[0], z_val[0]])
+	pt2 = np.array([x_val[1], y_val[1], z_val[1]])
+	pt3 = np.array([x_val[2], y_val[2], z_val[2]])
+	pt4 = np.array([x_val[3], y_val[3], z_val[3]])
+	pt5 = np.array([x_val[4], y_val[4], z_val[4]])
+	pt6 = np.array([x_val[5], y_val[5], z_val[5]])
+	pt7 = np.array([x_val[6], y_val[6], z_val[6]])
+	pt8 = np.array([x_val[7], y_val[7], z_val[7]])
+	pt9 = np.array([x_val[8], y_val[8], z_val[8]])
+
+
+	onex = (pt1[0],pt2[0])
+	oney = (pt1[1],pt2[1])
+	onez = [pt1[2],pt2[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+
+	onex = (pt3[0],pt2[0])
+	oney = (pt3[1],pt2[1])
+	onez = [pt3[2],pt2[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+	onex = (pt3[0],pt4[0])
+	oney = (pt3[1],pt4[1])
+	onez = [pt3[2],pt4[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+
+	onex = (pt1[0],pt4[0])
+	oney = (pt1[1],pt4[1])
+	onez = [pt1[2],pt4[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+
+	onex = (pt1[0],pt5[0])
+	oney = (pt1[1],pt5[1])
+	onez = [pt1[2],pt5[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+	onex = (pt6[0],pt5[0])
+	oney = (pt6[1],pt5[1])
+	onez = [pt6[2],pt5[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+
+	onex = (pt6[0],pt2[0])
+	oney = (pt6[1],pt2[1])
+	onez = [pt6[2],pt2[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+
+	onex = (pt3[0],pt7[0])
+	oney = (pt3[1],pt7[1])
+	onez = [pt3[2],pt7[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+	onex = (pt6[0],pt7[0])
+	oney = (pt6[1],pt7[1])
+	onez = [pt6[2],pt7[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+	onex = (pt8[0],pt7[0])
+	oney = (pt8[1],pt7[1])
+	onez = [pt8[2],pt7[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+	onex = (pt8[0],pt5[0])
+	oney = (pt8[1],pt5[1])
+	onez = [pt8[2],pt5[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+	onex = (pt8[0],pt4[0])
+	oney = (pt8[1],pt4[1])
+	onez = [pt8[2],pt4[2]]
+	ax.plot_wireframe(onex, oney, onez)
+
+
+
+	
+	plt.show()
+
+
+
+
 
 
 
@@ -511,7 +638,7 @@ def problem5():
 				# if the 'c' key is pressed, break from the loop
 				if key == ord("n"):
 					break
-	        cv2.destroyAllWindows()
+	        xcv2.destroyAllWindows()
 
 	
 
@@ -608,7 +735,7 @@ if __name__ == '__main__':
     #main()
     #F = problem1()
     #problem2(F)
-    #problem3()
+    problem3()
     #problem4()
-    problem5()
+    #problem5()
     #problem6()
