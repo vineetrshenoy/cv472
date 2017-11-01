@@ -86,24 +86,7 @@ def drawMyObject(pts, title, number):
 		#import pdb; pdb.set_trace()
 
 		image_house = np.zeros((512, 512, 3), np.uint8)
-		#cv2.line(image_house, pt1, pt2, np.array((0,0,255)), 1)
-		#cv2.line(image_house, pt2, pt3, np.array((0,0,255)), 1)
-		#cv2.line(image_house, pt3, pt4, np.array((0,0,255)), 1)
-		#cv2.line(image_house, pt4, pt1, np.array((0,0,255)), 1)
-		#cv2.line(image_house, pt5, pt6, np.array((0,0,255)), 1)
-		#cv2.line(image_house, pt6, pt7, np.array((0,0,255)), 1)
-		#cv2.line(image_house, pt7, pt8, np.array((0,0,255)), 1)
-		#cv2.line(image_house, pt8, pt5, np.array((0,0,255)), 1)
-
-		#cv2.line(image_house, pt1, pt5, np.array((0,0,255)), 1)
-		#cv2.line(image_house, pt2, pt6, np.array((0,0,255)), 1)
-		#cv2.line(image_house, pt3, pt7, np.array((0,0,255)), 1)
-		#cv2.line(image_house, pt4, pt8, np.array((0,0,255)), 1)
-
-		#cv2.line(image_house, pt5, pt9, np.array((0,0,255)), 1)
-		#cv2.line(image_house, pt8, pt9, np.array((0,0,255)), 1)
-		#cv2.line(image_house, pt7, pt9, np.array((0,0,255)), 1)
-		#cv2.line(image_house, pt6, pt9, np.array((0,0,255)), 1)
+		
 
 		fig = plt.figure(number)
 		fig.canvas.set_window_title(title)
@@ -195,15 +178,15 @@ def problem4():
 	lt = K * MextLeft * pts
 
 	rt = K * MextRight * pts
-	drawMyObject(lt, 'Left Camera', 0)
-	drawMyObject(rt, 'Right Camera', 0)
+	drawMyObject(lt, 'Problem 4: Left Camera', 0)
+	drawMyObject(rt, 'Problem 4: Right Camera', 0)
 
 
 	lt = dividePoints(lt)
 	rt = dividePoints(rt)
 	K_inv = np.linalg.inv(K)
 
-	import pdb; pdb.set_trace()
+	
 	X = cv2.triangulatePoints(K*MextLeft, K*MextRight, np.transpose(lt), np.transpose(rt) )
 	
 	image_array = []
@@ -336,8 +319,8 @@ def problem3():
 	
 
 
-	drawMyObject(lt, 'Left Camera', 0)
-	drawMyObject(rt, 'Right Camera', 0)
+	drawMyObject(lt, 'Problem 3 Left Camera', 0)
+	drawMyObject(rt, 'Problem 4 Right Camera', 1)
 
 
 	lt = dividePoints(lt)
@@ -410,6 +393,7 @@ def problem3():
 	
 	fig = plt.figure()
 	ax = fig.add_subplot(111, projection='3d')
+	fig.canvas.set_window_title("Problem 3 Reconstruction")
 	
 	#test = image_array[0,:]
 	x_val = image_array[0,:]
@@ -518,6 +502,7 @@ def problem2(F_mat):
 
 	E = np.transpose(K) * F_mat * K
 
+	print "The essential matrix is: "
 	print E
 
 
@@ -544,9 +529,7 @@ def problem1():
 	pts = np.transpose(pts)
 	NN = 9
 
-	#ones = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1])
-	#pts = np.vstack([pts, pts])
-	#pts = np.matrix(pts)
+	
 
 	pix  = np.zeros((NN,3))
 	pix = np.matrix(pix)
@@ -556,23 +539,18 @@ def problem1():
 	lt = K * MextLeft * pts
 
 	rt = K * MextRight * pts
-	#drawMyObject(lt, 'Left Camera', 0)
-	#drawMyObject(rt, 'Right Camera', 0)
-	
 
+	drawMyObject(lt, "Problem 1 Left Camera", 1)
+	drawMyObject(rt,"Problem 1 Right Camera", 2)
+	
 	x = dividePoints(lt)
 	xp = dividePoints(rt)
 
 
-	#import pdb; pdb.set_trace()
-	#print x
-	#print xp
 	mat = np.array([x[0,0]*xp[0,0] , x[0,0] * xp[0,1], x[0,0], x[0,1]*xp[0,0], x[0,1]*xp[0,1],
 	x[0,1], xp[0,0], xp[0,1], 1])
 
-	#row2 = np.array([1,2,3,4,5,6,7,8,9])
-	#row =  np.vstack((row, row2))
-
+	
 	for i in range(1,9):
 		row = np.array([x[i,0]*xp[i,0] , x[i,0] * xp[i,1], x[i,0], x[i,1]*xp[i,0], x[i,1]*xp[i,1],
 	x[i,1], xp[i,0], xp[i,1], 1])
@@ -581,17 +559,26 @@ def problem1():
 	#print mat
 
 	U, S, V = np.linalg.svd(np.matrix(mat))
-	lastCol = V[8,:]
-	#x = np.transpose(x)
-	#xp = np.transpose(xp)
-	#import pdb; pdb.set_trace()
-	F = cv2.findFundamentalMat(x, xp)
+	lastCol = V[:,8]
 
-	#print F
 
+	print "Our calculated Fundamental Matrix is"
 	lastCol = np.reshape(lastCol, (3,3))
-	#print lastCol
+	print lastCol
+	print ""
+	print ""
 
+
+	
+	print "The fundmental matrix using OpenCV is"
+	F = cv2.findFundamentalMat(x, xp)
+	print F[0]
+
+	print ""
+
+	
+	
+	
 
 	return lastCol
 
@@ -628,7 +615,7 @@ def problem5():
 	        # Draw and display the corners
 	        img = cv2.drawChessboardCorners(img, (7,6), corners2,ret)
 
-	        name = "image" + str(count)
+	        name = "Problem 5, image" + str(count)
 	        count = count + 1
 
 	        while True:
@@ -639,7 +626,7 @@ def problem5():
 				# if the 'c' key is pressed, break from the loop
 				if key == ord("n"):
 					break
-	        xcv2.destroyAllWindows()
+	        cv2.destroyAllWindows()
 
 	
 
@@ -711,32 +698,51 @@ def problem5():
 	print "The K matrix is: "
 	print mtx
 
-	
 
-def problem6():
-
-
-	soa = np.array([[0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 1, 0],
-                [0, 0, 0, 0, 0, 1]])
-
-
-	X, Y, Z, U, V, W = zip(*soa)
-	fig = plt.figure()
-	ax = fig.add_subplot(111, projection='3d')
-	ax.quiver(X, Y, Z, U, V, W)
-	ax.set_xlim([-5, 5])
-	ax.set_ylim([-5, 5])
-	ax.set_zlim([-5, 5])
-
-	#plt.waitforbuttonpress(0) # this will wait for indefinite time
-	#plt.close(fig)
-	plt.show()
 
 if __name__ == '__main__':
     #main()
+    print "-------------------------------------------------"
+    print "PROBLEM 1"
+    print "-------------------------------------------------"
+    print ""
+    print ""
+    print ""
     F = problem1()
+    
+
+    print "-------------------------------------------------"
+    print "PROBLEM 2"
+    print "-------------------------------------------------"
+    print ""
+    print ""
+    print ""
+
+
     problem2(F)
+
+    print "-------------------------------------------------"
+    print "PROBLEM 3"
+    print "-------------------------------------------------"
+    print ""
+    print ""
+    print ""
     problem3()
+
+    print "-------------------------------------------------"
+    print "PROBLEM 4"
+    print "-------------------------------------------------"
+    print ""
+    print ""
+    print ""
     problem4()
+
+
+    print "-------------------------------------------------"
+    print "PROBLEM 5"
+    print "-------------------------------------------------"
+    print ""
+    print ""
+    print ""
     problem5()
-    problem6()
+    
