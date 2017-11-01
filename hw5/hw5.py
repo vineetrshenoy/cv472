@@ -343,7 +343,7 @@ def problem3():
 	lt = dividePoints(lt)
 	rt = dividePoints(rt)
 	
-	import pdb; pdb.set_trace()
+	
 	temp = np.matrix(np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]]))
 
 	M_left = K * temp 
@@ -383,7 +383,7 @@ def problem3():
 	#import pdb; pdb.set_trace()
 	lt = np.transpose(lt)
 	rt = np.transpose(rt)
-	import pdb; pdb.set_trace()
+	
 	X = cv2.triangulatePoints(M_left, M_right, lt, rt)
 	
 	
@@ -415,7 +415,7 @@ def problem3():
 	x_val = image_array[0,:]
 	y_val = image_array[1,:]
 	z_val = image_array[2,:]
-	import pdb; pdb.set_trace()
+	
 
 	
 	#import pdb; pdb.set_trace()
@@ -498,7 +498,8 @@ def problem3():
 
 
 
-	
+	plt.waitforbuttonpress(0) # this will wait for indefinite time
+	plt.close(fig)
 	plt.show()
 
 
@@ -733,9 +734,9 @@ def problem6():
 
 if __name__ == '__main__':
     #main()
-    #F = problem1()
-    #problem2(F)
+    F = problem1()
+    problem2(F)
     problem3()
-    #problem4()
-    #problem5()
-    #problem6()
+    problem4()
+    problem5()
+    problem6()
