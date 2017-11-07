@@ -34,15 +34,16 @@ def convertPoints(pts):
 def dividePoints(pts):
 
 	image_array = []
-		
-	for i in range(0,9):
-		#import pdb; pdb.set_trace()
-		divide_by = pts.item((2,i))
-		one = pts.item((0,i))/divide_by
-		two = pts.item((1,i))/divide_by
-		image_array.append([one, two])
+	
+	for i in range(0,len(pts[0])):
+			
+			divide_by = pts[3,i]
+			one = pts[0,i]/divide_by
+			two = pts[1,i]/divide_by
+			three = pts[2,i]/divide_by
+			image_array.append([one, two, three])
 
-		
+	
 	np_image_array = np.asarray(image_array)
 	
 	return np_image_array
@@ -99,6 +100,16 @@ def problem3(K, F, one_pts, two_pts):
 	#convertPoints(one_pts)
 	import pdb; pdb.set_trace()
 	X = cv2.triangulatePoints(M_left, M_right, np.transpose(one_pts), np.transpose(two_pts))
+
+	pts = dividePoints(X)
+	pts = np.transpose(pts)
+
+	fig = plt.figure()
+	ax = fig.add_subplot(111, projection='3d')
+
+	ax.scatter(pts[0], pts[1], pts[2])
+	plt.show()
+
 	x = 5
 
 
@@ -147,9 +158,9 @@ def problem1():
 	'''
 	img3 = cv2.drawMatchesKnn(img1, kp1, img2, kp2, good, None,  flags=2)
 
-	#plt.waitforbuttonpress(0) # this will wait for indefinite time
-	#plt.close()
-	#plt.imshow(img3),plt.show()
+	plt.waitforbuttonpress(0) # this will wait for indefinite time
+	plt.close()
+	plt.imshow(img3),plt.show()
 
 
 
