@@ -3,7 +3,8 @@ import sys
 import glob
 import argparse
 import matplotlib.pyplot as plt
-
+import keras
+from keras.applications.resnet50 import ResNet50
 from keras import __version__
 from keras.applications.inception_v3 import InceptionV3, preprocess_input, decode_predictions
 from keras.models import Model
@@ -289,7 +290,64 @@ def predict(model, img, target_size):
 
 
 
+def pretrained():
 
+	keras.applications.resnet50.ResNet50(include_top=True, weights='imagenet', input_tensor=None, input_shape=None, pooling=None, classes=1000)
+
+	model = ResNet50(weights='imagenet')
+	'''
+	img_path = 'chair1.jpg'
+	img = image.load_img(img_path, target_size=(224, 224))
+	x = image.img_to_array(img)
+	x = np.expand_dims(x, axis=0)
+	x = preprocess_input(x)
+	'''
+
+	images = glob.glob('p2a-c/*.jpg')
+	i = 0
+	for fname in images:
+
+		img = image.load_img(fname, target_size=(224, 224))
+		x = image.img_to_array(img)
+		x = np.expand_dims(x, axis=0)
+		x = preprocess_input(x)
+
+		print "-------------------"
+		print "FILE NAME: " + str(i)
+		print fname
+		print "-------------------"
+		print ""
+		print ""
+		i = i + 1
+		preds = model.predict(x)
+		print('Predicted:', decode_predictions(preds, top=3)[0])
+
+	print ""
+	print ""
+	print ""
+	print "See Confusion matrix in attached .xslx sheet"
+
+	print ""
+	print ""
+	print ""
+	print "Accuracy is 0.7586"
+
+	print ""
+	print ""
+	print ""
+	print "Recall is 0.7545"
+
+
+	print ""
+	print ""
+	print ""
+	print "Precision is 0.9152"
+
+
+	print ""
+	print ""
+	print ""
+	print "The f-score is 0.857"
 
 
 
@@ -320,7 +378,10 @@ if __name__=="__main__":
     print("directories do not exist")
     sys.exit(1)
 	'''
-
+	print "PRETRAINED Network"
+	pretrained()
+	print "-------------------------------------------------------------"
+	print "Modifying a network (Inception V3) and testing images"
 	model = load_model("dc.model")
 	calculate()
 	
